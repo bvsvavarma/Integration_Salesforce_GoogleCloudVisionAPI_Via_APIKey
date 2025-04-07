@@ -1,11 +1,7 @@
-// Use .apex files to store anonymous Apex.
-// You can execute anonymous Apex in VS Code by selecting the
-//     apex text and running the command:
-//     SFDX: Execute Anonymous Apex with Currently Selected Text
-// You can also execute the entire file by running the command:
-//     SFDX: Execute Anonymous Apex with Editor Contents
-
-Http http = new Http();
+public with sharing class CloudVisionController {
+    @AuraEnabled
+    public static string getImageInfo(){
+        Http http = new Http();
         
         String requestBody = '{"requests": [{"features": [{"maxResults": 10,"type": "IMAGE_PROPERTIES"   }],"image": {"source": {"imageUri": "gs://cloud-samples-data/vision/image_properties/bali.jpeg"}}}]}';
         HttpRequest request = new HttpRequest();
@@ -14,4 +10,10 @@ Http http = new Http();
         request.setBody(requestBody);
         request.setHeader('Content-Type', 'application/json');
         HttpResponse response = http.send(request);
-        System.debug('Body: ' + response.getBody());
+        if(response.getStatusCode() == 200){
+            return response.getBody();
+        }
+        return 'Something went wrong';
+
+    }
+}
